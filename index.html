@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Clock Widget</title>
+    <title>Compact World Clock Widget</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -20,7 +20,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
         }
 
         .container {
@@ -28,7 +28,7 @@
             max-width: 1100px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            gap: 12px;
         }
 
         @media (max-width: 900px) {
@@ -46,10 +46,10 @@
         .clock-card {
             background: #ffffff;
             border: 1px solid #eaeaea;
-            border-radius: 16px;
-            padding: 24px 16px;
+            border-radius: 12px;
+            padding: 12px 10px;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             display: flex;
             flex-direction: column;
@@ -58,32 +58,40 @@
 
         .clock-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .top-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            margin-bottom: 6px;
         }
 
         .city-name {
             font-family: 'Playfair Display', serif;
-            font-size: 1.35rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #111111;
-            margin-bottom: 16px;
             letter-spacing: -0.01em;
         }
 
-        /* Analog Clock Styles */
+        /* Compact Analog Clock Styles */
         .analog-clock {
-            width: 70px;
-            height: 70px;
-            border: 2px solid #222;
+            width: 36px;
+            height: 36px;
+            border: 1.5px solid #222;
             border-radius: 50%;
             position: relative;
-            margin-bottom: 16px;
             background: #fafafa;
+            flex-shrink: 0;
         }
 
         .center-dot {
-            width: 6px;
-            height: 6px;
+            width: 4px;
+            height: 4px;
             background: #111;
             border-radius: 50%;
             position: absolute;
@@ -102,16 +110,16 @@
         }
 
         .hour-hand {
-            width: 3px;
-            height: 20px;
+            width: 2px;
+            height: 10px;
             background: #111;
             transform: translateX(-50%) rotate(0deg);
             z-index: 3;
         }
 
         .minute-hand {
-            width: 2px;
-            height: 26px;
+            width: 1.5px;
+            height: 13px;
             background: #333;
             transform: translateX(-50%) rotate(0deg);
             z-index: 4;
@@ -119,34 +127,47 @@
 
         .second-hand {
             width: 1px;
-            height: 28px;
+            height: 14px;
             background: #e53e3e;
             transform: translateX(-50%) rotate(0deg);
             z-index: 5;
         }
 
+        .bottom-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 8px;
+        }
+
         .digital-time {
             font-family: 'Playfair Display', serif;
-            font-size: 2.1rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: #111111;
             letter-spacing: -0.02em;
-            margin-bottom: 6px;
             line-height: 1;
         }
 
+        .meta-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.1;
+        }
+
         .date-str {
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             font-weight: 500;
             color: #555555;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .ampm-str {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 700;
             color: #888888;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
         }
     </style>
@@ -154,12 +175,12 @@
 <body>
 
     <div class="container" id="clock-container">
-        <!-- Clocks will be populated via JavaScript -->
+        <!-- Clocks populated via JavaScript -->
     </div>
 
     <script>
         const cities = [
-            { name: "New York", timezone: "America/New_YorK" },
+            { name: "New York", timezone: "America/New_York" },
             { name: "London", timezone: "Europe/London" },
             { name: "Tokyo", timezone: "Asia/Tokyo" },
             { name: "Sydney", timezone: "Australia/Sydney" }
@@ -167,21 +188,26 @@
 
         const container = document.getElementById('clock-container');
 
-        // Create cards structure
         cities.forEach((city, index) => {
             const card = document.createElement('div');
             card.className = 'clock-card';
             card.innerHTML = `
-                <div class="city-name">${city.name}</div>
-                <div class="analog-clock">
-                    <div class="center-dot"></div>
-                    <div class="hand hour-hand" id="hour-${index}"></div>
-                    <div class="hand minute-hand" id="min-${index}"></div>
-                    <div class="hand second-hand" id="sec-${index}"></div>
+                <div class="top-row">
+                    <div class="city-name">${city.name}</div>
+                    <div class="analog-clock">
+                        <div class="center-dot"></div>
+                        <div class="hand hour-hand" id="hour-${index}"></div>
+                        <div class="hand minute-hand" id="min-${index}"></div>
+                        <div class="hand second-hand" id="sec-${index}"></div>
+                    </div>
                 </div>
-                <div class="digital-time" id="time-${index}">--:--</div>
-                <div class="date-str" id="date-${index}">---, --- --</div>
-                <div class="ampm-str" id="ampm-${index}">--</div>
+                <div class="bottom-row">
+                    <div class="digital-time" id="time-${index}">--:--</div>
+                    <div class="meta-info">
+                        <div class="date-str" id="date-${index}">---, --- --</div>
+                        <div class="ampm-str" id="ampm-${index}">--</div>
+                    </div>
+                </div>
             `;
             container.appendChild(card);
         });
@@ -190,10 +216,8 @@
             const now = new Date();
 
             cities.forEach((city, index) => {
-                // Get time components for specific timezone
                 const optionsTime = { timeZone: city.timezone, hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false };
-                const formatterTime = new Intl.DateTimeFormat([], optionsTime);
-                const timeParts = formatterTime.formatToParts(now);
+                const timeParts = new Intl.DateTimeFormat([], optionsTime).formatToParts(now);
                 
                 let hours = 0, minutes = 0, seconds = 0;
                 timeParts.forEach(p => {
@@ -202,23 +226,17 @@
                     if (p.type === 'second') seconds = parseInt(p.value, 10);
                 });
 
-                // 12-hour format string
                 const options12 = { timeZone: city.timezone, hour: '2-digit', minute: '2-digit', hour12: true };
                 const timeString12 = new Intl.DateTimeFormat([], options12).format(now);
-                
-                // Extract time and AM/PM
                 const [timePart, ampmPart] = timeString12.split(' ');
 
-                // Date string (e.g. Sun, Oct 4)
                 const optionsDate = { timeZone: city.timezone, weekday: 'short', month: 'short', day: 'numeric' };
                 const dateString = new Intl.DateTimeFormat('en-US', optionsDate).format(now);
 
-                // Update DOM elements
                 document.getElementById(`time-${index}`).textContent = timePart;
                 document.getElementById(`date-${index}`).textContent = dateString;
                 document.getElementById(`ampm-${index}`).textContent = ampmPart || '';
 
-                // Calculate analog hand rotations (smooth seconds & minutes)
                 const secAngle = (seconds / 60) * 360;
                 const minAngle = ((minutes + seconds / 60) / 60) * 360;
                 const hourAngle = (((hours % 12) + minutes / 60) / 12) * 360;
